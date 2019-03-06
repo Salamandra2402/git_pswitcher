@@ -26,3 +26,12 @@ func TestWriteOne(t *testing.T) {
 	}
 
 }
+
+func TestValidation(t *testing.T) {
+	var err error
+	profile := Profile{Name: "1"}
+	if err = profile.SetEmail("a.user13@mail.ru"); err != nil {
+		t.Errorf("email validation failed")
+	}
+
+}

@@ -8,7 +8,7 @@ USAGE:
    git_pswitcher [global options] command [command options] [arguments...]
 
 VERSION:
-   0.1
+   0.1.2
 
 DESCRIPTION:
    git_pswitcher is an utility to keep git profiles and easily switch between them
@@ -26,6 +26,11 @@ GLOBAL OPTIONS:
    --help, -h     show help
    --version, -v  print the version
 ```
+
+## Where is the database stored?
+
+The database with your profiles can be found in ```/home/$USER/.git_pswitcher
+It can be easily moved to another machine.
 
 ## TODO
 

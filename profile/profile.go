@@ -5,6 +5,8 @@ import (
 	"regexp"
 )
 
+const emailValidationRegexp = "^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$"
+
 //Profile simple structure to keep profile settings
 type Profile struct {
 	Name  string `json:"name"`
@@ -20,7 +22,7 @@ func (p *Profile) SetName(name string) error {
 //SetEmail setter with an email validation
 func (p *Profile) SetEmail(email string) error {
 	// email validation regexp
-	validationRp, err := regexp.Compile("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$")
+	validationRp, err := regexp.Compile(emailValidationRegexp)
 	if err != nil {
 		return err
 	}
