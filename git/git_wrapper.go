@@ -3,7 +3,7 @@ package git
 import (
 	"os/exec"
 
-	"github.com/acrap/git_pswitcher/profile"
+	"github.com/Salamandra2402/git_pswitcher/profile"
 )
 
 //SwitchToProfile switch to chosen git profile

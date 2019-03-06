@@ -6,7 +6,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -14,7 +13,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/acrap/git_pswitcher/profile"
+	"github.com/Salamandra2402/git_pswitcher/git"
+	"github.com/Salamandra2402/git_pswitcher/profile"
 	"github.com/gorilla/mux"
 	"github.com/zserge/webview"
 )
@@ -27,12 +27,7 @@ var (
 
 var results []string
 
-// CloseHandler handles the exit route
-func CloseHandler(w http.ResponseWriter, r *http.Request) {
-	server.Shutdown(context.Background())
-}
-
-// ListHandler handles the list route
+// ListHandler returns json with Git profiles
 func ListHandler(w http.ResponseWriter, r *http.Request) {
 	db := profile.CreateDefaultJsonFileDb()
 	profiles, err := db.GetProfiles()
@@ -50,7 +45,7 @@ func ListHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(data))
 }
 
-// AddHandler converts post request body to string
+// AddHandler add a new Git user profile
 func AddHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		db := profile.CreateDefaultJsonFileDb()
@@ -67,7 +62,25 @@ func AddHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// UpdateHandler converts post request body to string
+// SwitchHandler switches to an another user
+func SwitchHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		name := r.FormValue("name")
+		db := profile.CreateDefaultJsonFileDb()
+		profile, err := db.GetProfile(name)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		} else {
+			git.SwitchToProfile(profile)
+		}
+	} else {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+	}
+}
+
+// UpdateHandler updates email for existing user
 func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		db := profile.CreateDefaultJsonFileDb()
@@ -115,7 +128,7 @@ func main() {
 	muxAPI.HandleFunc("/list", ListHandler)
 	muxAPI.HandleFunc("/add", AddHandler)
 	muxAPI.HandleFunc("/update", UpdateHandler)
-	muxAPI.HandleFunc("/close", CloseHandler)
+	muxAPI.HandleFunc("/switch", SwitchHandler)
 	fmt.Println("Sharing API on localhost:9000")
 	server = &http.Server{Addr: ":9000", Handler: muxAPI}
 
@@ -137,5 +150,6 @@ func main() {
 	}()
 	time.Sleep(1000)
 	webview.Open("Git Profile Switcher",
-		"http://localhost:8000/web/index.html", 551, 401, true)
+		"http://localhost:8000/web/index.html", 551, 401, false)
+
 }

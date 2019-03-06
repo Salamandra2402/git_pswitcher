@@ -118,3 +118,18 @@ func (db JsonFileDb) RemoveProfile(name string) error {
 	}
 	return fmt.Errorf("can't find a profile to remove")
 }
+
+//GetProfile get profile by name
+func (db JsonFileDb) GetProfile(name string) (Profile, error) {
+	var err error
+	var profiles []Profile
+	if profiles, err = db.GetProfiles(); err != nil {
+		return Profile{}, err
+	}
+	for _, item := range profiles {
+		if item.Name == name {
+			return item, nil
+		}
+	}
+	return Profile{}, fmt.Errorf("Can't find the profile with this name")
+}
