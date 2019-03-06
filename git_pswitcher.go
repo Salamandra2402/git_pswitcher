@@ -136,6 +136,6 @@ func main() {
 		log.Fatal(http.ListenAndServe(":"+port, router))
 	}()
 	time.Sleep(1000)
-	webview.Open("Minimal webview example",
-		"http://localhost:8000/web/index.html", 550, 400, true)
+	webview.Open("Git Profile Switcher",
+		"http://localhost:8000/web/index.html", 551, 401, true)
 }
