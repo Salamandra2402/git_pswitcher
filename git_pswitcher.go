@@ -8,7 +8,6 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -124,26 +123,16 @@ func init() {
 func main() {
 	results = append(results, time.Now().Format(time.RFC3339))
 
-	muxAPI := http.NewServeMux()
-	muxAPI.HandleFunc("/list", ListHandler)
-	muxAPI.HandleFunc("/add", AddHandler)
-	muxAPI.HandleFunc("/update", UpdateHandler)
-	muxAPI.HandleFunc("/switch", SwitchHandler)
-	fmt.Println("Sharing API on localhost:9000")
-	server = &http.Server{Addr: ":9000", Handler: muxAPI}
-
-	go func() {
-		if err := server.ListenAndServe(); err != nil {
-			fmt.Println("Can't start the server")
-		}
-	}()
-
 	dir := "/public/"
 	port := "8000"
 	router := mux.NewRouter()
 	router.
-		PathPrefix("/").
+		PathPrefix("/web/").
 		Handler(http.StripPrefix("/web/", http.FileServer(http.Dir("."+dir))))
+	router.HandleFunc("/list", ListHandler)
+	router.HandleFunc("/add", AddHandler)
+	router.HandleFunc("/update", UpdateHandler)
+	router.HandleFunc("/switch", SwitchHandler)
 	log.Println("Serve web on localhost:" + port)
 	go func() {
 		log.Fatal(http.ListenAndServe(":"+port, router))
